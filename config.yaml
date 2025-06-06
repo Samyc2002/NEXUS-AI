@@ -1,0 +1,3 @@
+name: "NEXUS"
+log_file_path: "./logs.json"
+retain_memory: true
