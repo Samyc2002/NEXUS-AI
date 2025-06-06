@@ -1,4 +1,5 @@
 import os
+import threading
 from uuid import uuid4
 from progress.bar import ChargingBar
 from langsmith import traceable
@@ -8,10 +9,11 @@ import pyttsx3
 
 from chatbot import nexus
 from logger import add_user_log, add_nexus_log, get_previous_logs
-from utils import load_config
+from utils import load_config, listen_to_keyboard
 
 r = sr.Recognizer()
 listening = True
+exit_event = threading.Event()
 
 
 def speakText(command):
@@ -72,38 +74,56 @@ def load_context():
     print("\n")
 
 
+def listen_to_mic():
+    """
+    The `listen_to_mic` function continuously listens to microphone input, recognizes speech using
+    Google's speech recognition, and processes the user input accordingly while handling various
+    exceptions.
+    """
+    while not exit_event.is_set():
+        try:
+            with sr.Microphone() as source:
+                r.adjust_for_ambient_noise(source, duration=0.2)
+                print("Listening...")
+                audio = r.listen(source)
+                user_input = r.recognize_google(audio).lower()
+
+                if user_input in ["quit", "exit", "q"]:
+                    exit_event.set()
+                    break
+
+                stream_graph_updates(user_input)
+
+        except sr.UnknownValueError:
+            speakText("Sorry, I didn't catch that.")
+        except sr.RequestError as e:
+            speakText("Speech recognition failed.")
+        except Exception as e:
+            speakText("An error occurred.")
+            break
+
+
 def main():
     """
-    The main function continuously listens for user input, processes it, and handles exceptions
-    accordingly.
+    The main function loads user config, replays logs if specified, and runs an assistant that listens
+    to microphone and keyboard inputs.
     """
     # Load user config
     load_config()
 
     # Load and replay logs
-    if os.environ.get("retain_memory") == "true":
+    if os.environ.get("retain_memory") == "True":
         load_context()
 
     # Run the assistant
-    while True:
-        if listening:
-            print("Listening...")
-        try:
-            with sr.Microphone() as source2:
-                r.adjust_for_ambient_noise(source2, duration=0.2)
-                audio2 = r.listen(source2)
-                user_input = r.recognize_google(audio2)
-                user_input = user_input.lower()
-                if user_input in ["quit", "exit", "q"]:
-                    break
-                stream_graph_updates(user_input)
-        except sr.RequestError as e:
-            print("Could not request results; {0}".format(e))
-            speakText("Sorry I messed up in my search. Can you please repeat?")
-        except sr.UnknownValueError:
-            speakText("Sorry I didn't get you. Can you please repeat?")
-        except:
-            break
+    mic_thread = threading.Thread(target=listen_to_mic)
+    kb_thread = threading.Thread(target=listen_to_keyboard(exit_event))
+
+    mic_thread.start()
+    kb_thread.start()
+
+    mic_thread.join()
+    kb_thread.join()
 
 
 if __name__ == "__main__":

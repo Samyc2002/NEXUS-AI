@@ -11,6 +11,9 @@ from langchain.chat_models import init_chat_model
 
 from langchain_tavily import TavilySearch
 
+from tools import get_date, get_time, get_weather, get_news
+
+
 load_dotenv()
 
 llm = init_chat_model("google_genai:gemini-2.0-flash")
@@ -22,8 +25,8 @@ class State(TypedDict):
 
 nexus_builder = StateGraph(State)
 
-tool = TavilySearch(max_results=2)
-tools = [tool]
+custom_tools = [get_date, get_time, get_weather, get_news]
+tools = [*custom_tools, TavilySearch(max_results=2)]
 llm_with_tools = llm.bind_tools(tools)
 
 
@@ -44,7 +47,7 @@ def chatbot(state: State):
 
 nexus_builder.add_node("chatbot", chatbot)
 
-tool_node = ToolNode(tools=[tool])
+tool_node = ToolNode(tools=tools)
 nexus_builder.add_node("tools", tool_node)
 
 
