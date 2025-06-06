@@ -15,6 +15,8 @@ def load_config():
         config = yaml.safe_load(config_file)
         for key in config.keys():
             os.environ[key] = str(config[key])
+    if not os.environ.get("name"):
+        os.environ["name"] = "NEXUS"
 
 
 def listen_to_keyboard(exit_event):
@@ -37,6 +39,7 @@ def listen_to_keyboard(exit_event):
         and set an exit event accordingly, with platform-specific implementations for Windows and POSIX
         systems.
         """
+        print("Terminating NEXUS forcefully.")
         try:
             # ---------- Windows ----------
             import msvcrt
@@ -67,5 +70,4 @@ def listen_to_keyboard(exit_event):
                             break
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_attr)
-    print("Terminating NEXUS forcefully.")
     return listen

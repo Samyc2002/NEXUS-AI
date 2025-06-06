@@ -1,3 +1,5 @@
+from chatbot import nexus
+from logger import add_user_log, add_nexus_log, get_previous_logs
 import os
 import threading
 from uuid import uuid4
@@ -7,9 +9,8 @@ from langsmith import traceable
 import speech_recognition as sr
 import pyttsx3
 
-from chatbot import nexus
-from logger import add_user_log, add_nexus_log, get_previous_logs
-from utils import load_config, listen_to_keyboard
+from utils import listen_to_keyboard
+
 
 r = sr.Recognizer()
 listening = True
@@ -24,7 +25,7 @@ def speakText(command):
     :param command: The `command` parameter in the `speakText` function is a string that represents the
     text that you want the assistant to speak out loud
     """
-    print("Assistant: ", command)
+    print(f"{os.environ.get('name')}: ", command)
     engine = pyttsx3.init()
     engine.say(command)
     engine.runAndWait()
@@ -108,11 +109,9 @@ def main():
     The main function loads user config, replays logs if specified, and runs an assistant that listens
     to microphone and keyboard inputs.
     """
-    # Load user config
-    load_config()
 
     # Load and replay logs
-    if os.environ.get("retain_memory") == "True":
+    if os.environ.get("retain_memory") != "False":
         load_context()
 
     # Run the assistant

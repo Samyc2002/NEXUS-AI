@@ -37,3 +37,10 @@ python src
 * A LangSmith API key
 * A Open Weather API key
 * A News Api Key
+
+## Work In Progress
+
+> * Adding an inbuilt to-do list
+> * Adding more personality and tweaking voice
+> * Improved search
+> * App Support

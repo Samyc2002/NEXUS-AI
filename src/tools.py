@@ -49,3 +49,6 @@ def get_news(topic: str) -> str:
         return "Top headlines:\n" + "\n".join(headlines)
     except Exception as e:
         return f"Failed to fetch news: {str(e)}"
+
+
+custom_tools = [get_date, get_time, get_weather, get_news]
