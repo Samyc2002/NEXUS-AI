@@ -3,6 +3,7 @@ import sys
 import time
 import yaml
 
+default_config_file_path = "E:\\Projects\\NEXUS Main\\NEXUS AI\\config.default.yaml"
 config_file_path = "E:\\Projects\\NEXUS Main\\NEXUS AI\\config.yaml"
 
 
@@ -11,12 +12,14 @@ def load_config():
     The `load_config` function reads a YAML configuration file and sets the values as environment
     variables in Python.
     """
+    with open(default_config_file_path) as default_config_file:
+        default_config = yaml.safe_load(default_config_file)
+        for key in default_config.keys():
+            os.environ[key] = str(default_config[key])
     with open(config_file_path) as config_file:
         config = yaml.safe_load(config_file)
         for key in config.keys():
             os.environ[key] = str(config[key])
-    if not os.environ.get("name"):
-        os.environ["name"] = "NEXUS"
 
 
 def listen_to_keyboard(exit_event):
@@ -39,7 +42,6 @@ def listen_to_keyboard(exit_event):
         and set an exit event accordingly, with platform-specific implementations for Windows and POSIX
         systems.
         """
-        print("Terminating NEXUS forcefully.")
         try:
             # ---------- Windows ----------
             import msvcrt

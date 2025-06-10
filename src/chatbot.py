@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from typing import Annotated
 from typing_extensions import TypedDict
 
@@ -13,11 +12,6 @@ from langchain.chat_models import init_chat_model
 from langchain_tavily import TavilySearch
 
 from tools import custom_tools
-from utils import load_config
-
-
-load_dotenv()
-load_config()
 
 llm = init_chat_model("google_genai:gemini-2.0-flash")
 

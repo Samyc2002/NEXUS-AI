@@ -3,6 +3,14 @@ import datetime
 import requests
 import os
 
+from todo_tool import (
+    add_item,
+    check_item,
+    delete_item,
+    modify_item,
+    show_todo_list
+)
+
 
 @tool
 def get_date() -> str:
@@ -51,4 +59,19 @@ def get_news(topic: str) -> str:
         return f"Failed to fetch news: {str(e)}"
 
 
-custom_tools = [get_date, get_time, get_weather, get_news]
+custom_tools = [
+    # Date Tool
+    get_date,
+    # Time Tool
+    get_time,
+    # Weather Tool
+    get_weather,
+    # News Tool
+    get_news,
+    # Todo List Tools
+    add_item,
+    check_item,
+    delete_item,
+    modify_item,
+    show_todo_list
+]

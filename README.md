@@ -10,6 +10,9 @@ However, it is enabled by speech and keeps track of the conversation that has ha
 * Get news based on topics
 * Retain memory across sessions
 * Fully configurable using a `config.yaml` file
+* Inbuilt to-do list
+* Continuous voice based interaction
+* Added more personality and tweaked voice
 
 ## Usage
 
@@ -40,7 +43,6 @@ python src
 
 ## Work In Progress
 
-> * Adding an inbuilt to-do list
-> * Adding more personality and tweaking voice
 > * Improved search
 > * App Support
+> * Complex queries like: "give me some recent tech news and i am also interested in what kind of books are releasing in self help these days"

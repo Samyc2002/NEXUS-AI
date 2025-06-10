@@ -1,4 +1,5 @@
 .conda
+.nexus
 */__pycache__
 */.env
 logs.json
